@@ -8,18 +8,29 @@ class FSM {
       throw Error;
     }
     this.config = config;
-    this.currState = config.initial;
-    this.states = [config.states];
-    //???
-    this.position = 0;
+    this.current = config.initial;
+    this.states = [config.initial];
+    this.place = 0;
   }
 
+  abc() {
+    var a = Object.keys(this.config.states).some(function(key) {
+        return key === state;
+    });
+
+    if (key === state) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
   /**
    * Returns active state.
    * @returns {String}
    */
   getState() {
-    return this.currState;
+    return this.current;
   }
 
   /**
@@ -27,14 +38,12 @@ class FSM {
    * @param state
    */
   changeState(state) {
-    var isExist = Object.keys(this.config.states).some(function(key) {
-        return key === state;
-    });
 
-    if (isExist) {
+
+    if (abc()) {
         this.states.push(state);
-        this.position = this.states.length - 1;
-        this.currState = state;
+        this.place = this.states.length - 1;
+        this.current = state;
     } else {
         throw Error();
     }
@@ -45,16 +54,16 @@ class FSM {
    * @param event
    */
   trigger(event) {
-    var events = this.config.states[this.currState].transitions;
+    var events = this.config.states[this.current].transitions;
     var isExist = Object.keys(events).some(function(key) {
       return key === event;
     });
 
     if (isExist) {
-      this.states = this.states.slice(0, this.position + 1);
+      this.states = this.states.slice(0, this.place + 1);
       this.states.push(events[event]);
-      this.position = this.states.length - 1;
-      this.currState = this.states[this.position];
+      this.place = this.states.length - 1;
+      this.current = this.states[this.place];
     } else {
       throw Error();
     }
@@ -66,8 +75,8 @@ class FSM {
   reset() {
     this.states = [];
     this.states.push(this.config.initial);
-    this.position = 0;
-    this.currState = this.config.initial;
+    this.place = 0;
+    this.current = this.config.initial;
   }
 
   /**
@@ -102,9 +111,9 @@ class FSM {
   undo() {
     var isAvailable = false;
 
-    if (this.position != 0) {
-      this.currState = this.states[this.position - 1];
-      this.position--;
+    if (this.place != 0) {
+      this.place--;
+      this.current = this.states[this.place];
       isAvailable = true;
     }
 
@@ -119,9 +128,9 @@ class FSM {
   redo() {
     var isAvailable = false;
 
-    if (this.position + 1 < this.states.length) {
-      this.currState = this.states[this.position + 1];
-      this.position++;
+    if (this.place + 1 < this.states.length) {
+      this.place++;
+      this.current = this.states[this.place];
       isAvailable = true;
     }
 
@@ -133,8 +142,8 @@ class FSM {
    */
   clearHistory() {
     this.states = [];
-    this.states.push(this.currState);
-    this.position = 0;
+    this.states.push(this.current);
+    this.place = 0;
   }
 }
 
