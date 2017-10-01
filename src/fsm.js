@@ -13,18 +13,6 @@ class FSM {
     this.place = 0;
   }
 
-  abc() {
-    var a = Object.keys(this.config.states).some(function(key) {
-        return key === state;
-    });
-
-    if (key === state) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
   /**
    * Returns active state.
    * @returns {String}
@@ -38,9 +26,11 @@ class FSM {
    * @param state
    */
   changeState(state) {
+    var isExist = Object.keys(this.config.states).some(function(key) {
+        return key === state;
+    });
 
-
-    if (abc()) {
+    if (isExist) {
         this.states.push(state);
         this.place = this.states.length - 1;
         this.current = state;
